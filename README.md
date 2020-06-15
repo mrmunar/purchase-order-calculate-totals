@@ -1,24 +1,114 @@
-# Lumen PHP Framework
+# Purchase Order Calculate Totals Backend
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework)
+This contains the following for calculating totals:
+* A POST API
+* A reusable Service
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+## Prerequisites
 
-## Official Documentation
+* PHP 7.2
+* Composer
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+## Installation
 
-## Contributing
+Clone this repo
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+git clone https://github.com/mrmunar/purchase-order-calculate-totals.git
+```
 
-## Security Vulnerabilities
+Install dependencies and libraries
 
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+```bash
+composer install
+```
 
-## License
+Start the server
 
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php -S localhost:8000 -t public
+```
+
+
+## Usage
+
+### API
+
+API for calculating purchase order totals by given array of purchase_order_ids
+
+```bash
+[POST] http://localhost:8000/test
+```
+
+Request Body
+
+```json
+{
+	"purchase_order_ids": [2344, 2345, 2346]
+}
+```
+
+Response Body
+
+```json
+[
+  {
+    "product_type_id": 1,
+    "total": 41.5
+  },
+  {
+    "product_type_id": 2,
+    "total": 13.8
+  },
+  {
+    "product_type_id": 3,
+    "total": 25
+  }
+]
+```
+
+### PurchaseOrderService
+
+The service is located in `app/Services/PurchaseOrderService.php`
+
+Sample Usage:
+
+```php
+$input = [2344, 2345, 2346];
+
+$service = new PurchaseOrderService;
+$output = $service->calculateTotals($input);
+
+/**
+ * $output:
+ * 
+ * [
+ *  {
+ *   "product_type_id": 1,
+ *   "total": 41.5
+ *  },
+ *  {
+ *   "product_type_id": 2,
+ *   "total": 13.8
+ *  },
+ *  {
+ *   "product_type_id": 3,
+ *   "total": 25
+ *  }
+ * ]
+ */
+```
+
+### CalculateTotalFactory
+
+This uses the Strategy Pattern where it creates an object that calculates the purchase order total based on the `product_type_id`
+
+It is located in `app/Strategies/PurchaseOrder/CalculateTotal/CalculateTotalFactory.php`
+
+## Unit Testing
+
+```bash
+./vendor/bin/phpunit --testdox
+```
+
+![carton-cloud-exam-backend-screenshot-1.png](https://raw.githubusercontent.com/mrmunar/project-resources/master/carton-cloud-exam-backend/carton-cloud-exam-backend-screenshot-1.png)
