@@ -17,11 +17,15 @@ class PurchaseOrderService
     }
     public function calculateTotals(array $purchaseOrderIds)
     {
+        if (empty($purchaseOrderIds)) {
+            throw new \Exception('Purchase order ids required');
+        }
+
         $dataFromApiCollection = $this->getDataFromApi($purchaseOrderIds);
 
         $productTypeIds = $this->getProductTypeIds($dataFromApiCollection);
 
-        return $this->getTotalsPerProductType($productTypeIds, $dataFromApiCollection);
+        return $this->getTotalsPerProductType($productTypeIds, $dataFromApiCollection)->toArray();
     }
 
     private function getDataFromApi(array $purchaseOrderIds): Collection

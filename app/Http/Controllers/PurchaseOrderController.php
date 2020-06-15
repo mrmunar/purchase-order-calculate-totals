@@ -23,6 +23,11 @@ class PurchaseOrderController extends Controller
 
     public function getTotals(Request $request)
     {
+        $this->validate($request, [
+            'purchase_order_ids' => 'required|array',
+            'purchase_order_ids.*' => 'integer'
+        ]);
+
         $purchaseOrderIds = $request->input('purchase_order_ids');
 
         $productTypeTotals = $this->service->calculateTotals($purchaseOrderIds);
